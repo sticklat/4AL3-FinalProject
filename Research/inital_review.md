@@ -12,7 +12,7 @@ $$D=\frac{\text{Real height of Object(mm)}*\text{Camera Frame height(pixels)}*\t
 - Start with COCO-trained YOLO v3 model, cut off last 3 head layers
 - Replace head layers with new random ones
 - Retrain only head layer on dataset
-- Feed output of retrained YOLO model into DisNet
+- Feed output of retrained YOLO model into [DisNet](https://github.com/guanjianyu/DisNet)
 - This is a similar method to the drone obstacle estimation except using an ANN for distance estimation now
 
 Tools:
