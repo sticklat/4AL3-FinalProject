@@ -95,16 +95,32 @@ on the datasets for which no source information is available. Please indicate wh
 use a small subset of the data or features for your project or the entire dataset, and why.
 
 \section{Proposed Solution}
+We plan to solve this problem by using a combination of object detection and regression models. However we will
+first begin with prelabelled images to remove the object detection work, then once we have proven that our model
+works with this prelabelled data we can add the object detection into our pipeline. For this we would use an
+object detection CNN like YOLO11 to identify objects in the image and their bounding boxes, then use our model
+to estimate the distance to each object based on the bounding box coordinates and the object's class\cite{Franke_Gopinath_Reddy_Ristic-Durrant_Michels_2021}.
+If sucessful, this will allow us to estimate the distance to multiple objects in an image.
 
-How do you plan to go about solving this problem? It is okay to not know
-how the machine learning models work at this point in the class, but you should be starting
-to get some idea based on the lectures and assigned readings. What kind of features and
-target labels do you have? What kind of models might you try? You may not propose simple
-linear regression models for this project. Are there any existing solutions to your problem?
-You must indicate 2-5 sources (research papers, books, machine learning challenges online)
-from where your solution was inspired. Put some thought into how you would approach this.
-How will you know if the model is good? How will you evaluate it? Also, share the libraries
-you intend to use for the project
+To build upon this first step and further improve the accuracy of our model we could add orientation data to
+our feature set. This would allow us to account for the 3d orientation of objects in the image, which would
+help us to better estimate the distance to objects that are not facing directly towards the camera. We would
+do that same process as before, first using prelabelled data to prove the concept, then adding in the object detection
+model to identify objects and their bounding boxes and orientations.
+
+We plan to first try a Multi Hidden Layer Neural Network for our model as similar projects such as
+Disnet\cite{disnet2018}. This could be expanded to be part of the YOLO CNN itself, by adding additional
+output layers to predict distance and orientation in addition to the bounding box coordinates and class\cite{kiefer2023approximate}.
+
+Some libraries we plan to use include:
+- PyTorch or Tensorflow for building and training our models
+- Pretrained YOLO models for object detection (ultralytics library)
+
+% The general plan is as follows:
+% - Create a model to esimate the distances given bounding box coordinates and object classes
+% - Connect this model to a YOLO object detection pipeline
+% - Add in more features that describe the 3d orientation of detected objects
+% - Use YOLO to determine these 3d bounding boxes
 
 \section{Implementation}
 
