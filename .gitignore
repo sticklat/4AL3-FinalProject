@@ -208,3 +208,7 @@ __marimo__/
 
 # Latex intermediate and output files
 texBuildFiles/
+
+# Dataset files
+src/estimator/dataset/training/label_2/*.txt
+*.zip
