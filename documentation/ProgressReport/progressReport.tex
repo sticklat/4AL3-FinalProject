@@ -120,10 +120,15 @@ You should write about your dataset here, following the guidelines regarding ite
 \section{Features}
 
 Describe any features you used for your model, or how your data was input to your model. Are you doing feature engineering or feature selection? Are you learning embeddings? Is it all part of one neural network? Refer to item 2. This may range from 0.25 pages to 0.5 pages.
+- Onehot vector for object classes
 
 \section{Implementation}
 
-Describe your model and implementation here. Refer to item 4. This may take around a page.
+% Describe your model and implementation here. Refer to item 4. This may take around a page.
+Our current implementation is a simplfied object based distance estimator. It uses YOLOv8\cite{yolov8_ultralytics}
+to generate bounding box coordinates and object classification, then passing this data to our model. We found that
+for this set of input features a 8 layer neural netowork with 128 neurons per layer and ELU activation worked best.
+Estimations aren't perfect but are often within $\pm10\%$ of the real distance. 
 
 \section{Results and Evaluation}
 
@@ -137,26 +142,26 @@ Write about your plans for the remainder of the project. This should include a d
 
 You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
 
-\subsection{Tables and figures}
+% \subsection{Tables and figures}
 
-See Table~\ref{citation-guide} for an example of a table and its caption.
-See Figure~\ref{fig:experiments} for an example of a figure and its caption.
+% See Table~\ref{citation-guide} for an example of a table and its caption.
+% See Figure~\ref{fig:experiments} for an example of a figure and its caption.
 
 
-\begin{figure}[t]
-  \includegraphics[width=\columnwidth]{example-image-golden}
-  \caption{A figure with a caption that runs for more than one line.
-    Example image is usually available through the \texttt{mwe} package
-    without even mentioning it in the preamble.}
-  \label{fig:experiments}
-\end{figure}
+% \begin{figure}[t]
+%   \includegraphics[width=\columnwidth]{example-image-golden}
+%   \caption{A figure with a caption that runs for more than one line.
+%     Example image is usually available through the \texttt{mwe} package
+%     without even mentioning it in the preamble.}
+%   \label{fig:experiments}
+% \end{figure}
 
-\begin{figure*}[t]
-  \includegraphics[width=0.48\linewidth]{example-image-a} \hfill
-  \includegraphics[width=0.48\linewidth]{example-image-b}
-  \caption {A minimal working example to demonstrate how to place
-    two images side-by-side.}
-\end{figure*}
+% \begin{figure*}[t]
+%   \includegraphics[width=0.48\linewidth]{example-image-a} \hfill
+%   \includegraphics[width=0.48\linewidth]{example-image-b}
+%   \caption {A minimal working example to demonstrate how to place
+%     two images side-by-side.}
+% \end{figure*}
 
 
 \subsection{Citations}
@@ -210,6 +215,13 @@ This an example cross-reference to Equation~\ref{eq:example}. You can also write
 \section*{Team Contributions}
 
 Write in this section a few sentences describing the contributions of each team member. What did each member work on? Refer to item 7.
+
+Thomas: (Estimator)
+- Feature importer to tensor
+- NN model
+- Hyperoptimization
+- Training function
+
 
 % Bibliography entries for the entire Anthology, followed by custom entries
 %\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
