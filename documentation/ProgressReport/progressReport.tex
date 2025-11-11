@@ -77,7 +77,7 @@
 
 % Here, write a brief introduction to the problem you are solving. This can be adapted from your problem description and motivation from the original proposal. This should be around 0.25-0.5 pages.
 
-Vehicles with autonomous capabilities need to able to know the distance to objects around them in order to navigate safely. While LIDAR
+Vehicles with ADAS (Advanced Driving Assistance Systems) capabilities need to able to know the distance to objects around them in order to navigate safely. While LIDAR
 sensors are often viewed as the gold standard for distance estimation, they are expensive and not always feasible for consumer vehicles.
 Another option is Radar, which is cheaper but has lower resolution and must contend with reflections and interference.
 Cameras are a cheaper alternative, but estimating depth from monocular images is a challenging problem. In this project, we aim to estimate
@@ -93,15 +93,26 @@ that is needed for consumer vehicles.
 % Here, talk about the related work you encountered for your approach. Cite at least 5 references. Refer to item 2. No one has done exactly your task? Write about the most similar thing you can find. This should be around 0.25-0.5 pages.
 
 We surveyed a number of related works in the area of monocular distance estimation. Many works focus on
-end-to-end deep learning approaches that take in raw images and output depth maps or distance estimates.
-For example, Godard et al. (2017) proposed an unsupervised learning approach for depth estimation using
-stereo image pairs \cite{godard2017unsupervised}.
+end-to-end deep learning approaches that take in raw images and full output depth maps.
+For example, \cite{godard2017} proposed an unsupervised learning approach for depth estimation using
+rectified monocular images. However, these methods are theoretically and computationally
+more complex than object based distance estimation. While depth maps are required for a camera only system, 
+we theorize it is possible to achieve good distance estimation performance using only object bounding boxes.
+This would allow for a simpler and more efficient model that could be more easily integrated into existing
+autonomous vehicle systems.
 
-Related works:
-- Disnet
-- harshilpatel312/KITTI-distance-estimation
-- Approximate Supervised Object Distance Estimation on Unmanned Surface Vehicles
-- 
+Examples that we found that that took simpler approaches to this issue include Disnet which uses 
+a YOLO pre-pipline to handle object detection, passing the object data from YOLO to a Multi Hidden-Layer Neural
+Network to estimate the distance of this object. Disnet was trained using supervised techniques on 3d laser scanner (LIDAR)
+measurements as ground truth.\cite{Haseeb2018DisNetAN}. Others such as\cite{Franke2021} have build off Disnet,
+expanding it with optimized YOLO models.
+
+More recently some such as \cite{Felipe2025} have created a new approach as a combination of depth-map and
+object based distance esimation: Object Distance Estimation Network (ODENet). This approach combines a depth map generated
+using MiDaS\cite{Ranftl2022} and object image detection from YOLOv8\cite{yolov8_ultralytics} with a multilayer
+perceptron.
+
+
 \section{Dataset}
 
 You should write about your dataset here, following the guidelines regarding item 1. This section may be 0.5-1 pages. Depending on your specific dataset, you may want to include subsections for the preprocessing, annotation, etc.

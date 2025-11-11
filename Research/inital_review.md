@@ -27,6 +27,11 @@ Tools:
 - Used the following set of features to train the 4 layer model (150 neurons per layer): ('xmin', 'ymin', 'xmax', 'ymax', 'xloc', 'yloc', 'observation angle')
 - Seems to be somewhat incomplete as the README discription of the model features doesn't match the source code
 
+### [Unsupervised Monocular Depth Estimation with Left-Right Consistency](https://ieeexplore.ieee.org/document/8100182)
+- Differs from other approaches as it isn't object based.
+- Takes in monocular image and estimates a full depth map
+- [pdf from arxiv](https://arxiv.org/pdf/1609.03677)
+
 ## Datasets
 
 ### [KITTI](https://www.cvlibs.net/datasets/kitti/)
