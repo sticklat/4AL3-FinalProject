@@ -212,3 +212,5 @@ texBuildFiles/
 # Dataset files
 src/estimator/dataset/training/label_2/*.txt
 *.zip
+# Result files
+src/estimator/hyperopt_results/
