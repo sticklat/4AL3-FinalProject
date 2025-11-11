@@ -22,6 +22,11 @@ Tools:
 - Modify YOLO models to also have an output for distance
 - Explorers some distance normalization strategies for training
 
+###  [anandasaia/NeuralDistance](https://github.com/anandasaia/NeuralDistance)
+- Uses YOLOv3 with pre-trained weights for image detection
+- Used the following set of features to train the 4 layer model (150 neurons per layer): ('xmin', 'ymin', 'xmax', 'ymax', 'xloc', 'yloc', 'observation angle')
+- Seems to be somewhat incomplete as the README discription of the model features doesn't match the source code
+
 ## Datasets
 
 ### [KITTI](https://www.cvlibs.net/datasets/kitti/)
