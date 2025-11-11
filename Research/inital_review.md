@@ -16,7 +16,7 @@ $$D=\frac{\text{Real height of Object(mm)}*\text{Camera Frame height(pixels)}*\t
 - This is a similar method to the drone obstacle estimation except using an ANN for distance estimation now
 
 Tools:
-- DisNet: ANN built to estimate object distances from bounding boxes
+- [DisNet](https://project.inria.fr/ppniv18/files/2018/10/paper22.pdf): ANN built to estimate object distances from bounding boxes
 
 ### [Approximate Supervised Object Distance Estimation on Unmanned Surface Vehicles](https://arxiv.org/html/2501.05567v1)
 - Modify YOLO models to also have an output for distance
