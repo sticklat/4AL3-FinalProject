@@ -10,10 +10,11 @@ from torch.utils.data import TensorDataset, DataLoader, random_split
 from NN import DistanceRegressor
 
 
-def train_distance_model(features, distances,device="cpu", epochs=50, batch_size=64, lr=1e-3, hidden_dim=64, num_hiddenLyr=2, activation=nn.ReLU, verbose=False):
+def train_distance_model(features, distances,device="cpu", epochs=50, batch_size=64, lr=1e-3, hidden_dim=64, num_hiddenLyr=2, activation=nn.ReLU, verbose=False, return_losses=False):
     """
     features: tensor of shape [N, 4] -> xmin, xmax, ymin, ymax
     labels: tensor of shape [N] -> label_id as integer
+    return_losses: if True, also returns train_losses and val_losses lists
     """
 
     
@@ -35,6 +36,9 @@ def train_distance_model(features, distances,device="cpu", epochs=50, batch_size
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
+    train_losses = []
+    val_losses = []
+
     for epoch in range(epochs):
         model.train()
         train_loss = 0.0
@@ -55,7 +59,13 @@ def train_distance_model(features, distances,device="cpu", epochs=50, batch_size
                 preds = model(X_batch)
                 val_loss += criterion(preds, y_batch).item() * X_batch.size(0)
         val_loss /= len(val_loader.dataset)
+        
+        train_losses.append(train_loss)
+        val_losses.append(val_loss)
+        
         if verbose:
             print(f"Epoch {epoch+1:03d} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}")
 
+    if return_losses:
+        return model, train_losses, val_losses
     return model
