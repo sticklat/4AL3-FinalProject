@@ -189,6 +189,11 @@ to generate bounding box coordinates and object classification, then passing thi
 for this set of input features a 8 layer neural netowork with 128 neurons per layer and ELU activation worked best.
 Estimations aren't perfect but are often within $\pm10\%$ of the real distance. 
 
+To establish a performance baseline, we compared our model design to the Disnet architecture~\cite{Haseeb2018DisNetAN}, 
+which achieved a Mean Absolute Error (MAE) of approximately 2.0 using similar object-based features. This provides 
+a meaningful benchmark for our current implementation, as it allows us to directly assess improvements in model accuracy 
+and efficiency relative to prior work.
+
 \section{Results and Evaluation}
 
 We evaluate our model using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) between the predicted and 
