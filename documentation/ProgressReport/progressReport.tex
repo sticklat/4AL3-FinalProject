@@ -194,12 +194,16 @@ Estimations aren't perfect but are often within $\pm10\%$ of the real distance.
 We evaluate our model using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) between the predicted and 
 ground-truth object distances. The ground-truth annotations were derived from the normalized dataset provided in 
 \texttt{annotations\_with\_id.csv}, and predictions were generated through our neural network model using YOLOv8-based 
-bounding box features. After running the evaluation pipeline, the model achieved an MAE of approximately 1.52 and an 
-RMSE of 2.18, indicating strong predictive performance given the simplicity of the input features. Qualitatively, most 
-predictions fall within $\pm10\%$ of the true distance, demonstrating the model’s ability to infer depth information 
-from spatial geometry and class cues alone. These results validate the feasibility of a lightweight, bounding-box-based 
-approach to monocular distance estimation and provide a solid foundation for further improvement through architectural 
-tuning and data augmentation.
+bounding box features. After running the evaluation pipeline, the model achieved an MAE of approximately 1.52 and an RMSE 
+of 2.18, indicating strong predictive performance given the simplicity of the input features. Qualitatively, most predictions 
+fall within $\pm10\%$ of the true distance, demonstrating the model’s ability to infer depth information from spatial geometry 
+and class cues alone. 
+
+For comparison, the original Disnet implementation reported a Mean Absolute Error around 2.0 after convergence across networks 
+with 3–10 hidden layers. Our model achieved a lower MAE of 1.52, suggesting improved distance estimation accuracy despite using 
+a simpler architecture and more compact input representation. These results validate the feasibility of a lightweight, 
+bounding-box-based approach to monocular distance estimation and provide a strong baseline for future experiments, such as 
+fine-tuning network hyperparameters or expanding the training dataset for better generalization.
 
 \section{Feedback and Plans}
 
