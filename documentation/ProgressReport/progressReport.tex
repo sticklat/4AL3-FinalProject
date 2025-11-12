@@ -187,12 +187,25 @@ balance between efficiency and predictive accuracy.
 Our current implementation is a simplfied object based distance estimator. It uses YOLOv8\cite{yolov8_ultralytics}
 to generate bounding box coordinates and object classification, then passing this data to our model. We found that
 for this set of input features a 8 layer neural netowork with 128 neurons per layer and ELU activation worked best.
-Estimations aren't perfect but are often within $\pm10\%$ of the real distance. 
 
 To establish a performance baseline, we compared our model design to the Disnet architecture~\cite{Haseeb2018DisNetAN}, 
 which achieved a Mean Absolute Error (MAE) of approximately 2.0 using similar object-based features. This provides 
 a meaningful benchmark for our current implementation, as it allows us to directly assess improvements in model accuracy 
-and efficiency relative to prior work.
+and efficiency relative to prior work. The updated version of Disnet used in~\cite{Franke2021} achieved better performance, but
+it relied on an optimized YOLO model and more complex training strategies. The final RMSE results were as follows:
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{RMSE} & Car & Person & \textbf{Total} \\
+    \hline
+    \textbf{Initial Disnet} & 38.2\% & 38.21\% & 38.20\% \\
+    \hline
+    \textbf{Disnet} & 13.72\% & 10.52\% & 10.90\% \\
+    \hline
+  \end{tabular}
+  \caption{RMSE comparison between Initial DisNet~\cite{Haseeb2018DisNetAN} and DisNet~\cite{Franke2021}}
+\end{table}
 
 \section{Results and Evaluation}
 
@@ -214,76 +227,76 @@ fine-tuning network hyperparameters or expanding the training dataset for better
 
 Write about your plans for the remainder of the project. This should include a discussion of the feedback you received from your TA, and how you plan to improve your approach. Reflect on your implementation and areas for improvement. Refer to item 6. This may be around 0.5 pages.
 
-\section{Template Notes}
+% \section{Template Notes}
 
-You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
+% You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
 
-% \subsection{Tables and figures}
+% % \subsection{Tables and figures}
 
-% See Table~\ref{citation-guide} for an example of a table and its caption.
-% See Figure~\ref{fig:experiments} for an example of a figure and its caption.
-
-
-% \begin{figure}[t]
-%   \includegraphics[width=\columnwidth]{example-image-golden}
-%   \caption{A figure with a caption that runs for more than one line.
-%     Example image is usually available through the \texttt{mwe} package
-%     without even mentioning it in the preamble.}
-%   \label{fig:experiments}
-% \end{figure}
-
-% \begin{figure*}[t]
-%   \includegraphics[width=0.48\linewidth]{example-image-a} \hfill
-%   \includegraphics[width=0.48\linewidth]{example-image-b}
-%   \caption {A minimal working example to demonstrate how to place
-%     two images side-by-side.}
-% \end{figure*}
+% % See Table~\ref{citation-guide} for an example of a table and its caption.
+% % See Figure~\ref{fig:experiments} for an example of a figure and its caption.
 
 
-\subsection{Citations}
+% % \begin{figure}[t]
+% %   \includegraphics[width=\columnwidth]{example-image-golden}
+% %   \caption{A figure with a caption that runs for more than one line.
+% %     Example image is usually available through the \texttt{mwe} package
+% %     without even mentioning it in the preamble.}
+% %   \label{fig:experiments}
+% % \end{figure}
 
-\begin{table*}
-  \centering
-  \begin{tabular}{lll}
-    \hline
-    \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
-    \hline
-    \citep{Gusfield:97}       & \verb|\citep|           &                           \\
-    \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
-    \citet{Gusfield:97}       & \verb|\citet|           &                           \\
-    \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
-    \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
-    \hline
-  \end{tabular}
-  \caption{\label{citation-guide}
-    Citation commands supported by the style file.
-  }
-\end{table*}
+% % \begin{figure*}[t]
+% %   \includegraphics[width=0.48\linewidth]{example-image-a} \hfill
+% %   \includegraphics[width=0.48\linewidth]{example-image-b}
+% %   \caption {A minimal working example to demonstrate how to place
+% %     two images side-by-side.}
+% % \end{figure*}
 
-Table~\ref{citation-guide} shows the syntax supported by the style files.
-We encourage you to use the natbib styles.
-You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
-You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
-You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
 
-\subsection{References}
+% \subsection{Citations}
 
-\nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
+% \begin{table*}
+%   \centering
+%   \begin{tabular}{lll}
+%     \hline
+%     \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
+%     \hline
+%     \citep{Gusfield:97}       & \verb|\citep|           &                           \\
+%     \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
+%     \citet{Gusfield:97}       & \verb|\citet|           &                           \\
+%     \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
+%     \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
+%     \hline
+%   \end{tabular}
+%   \caption{\label{citation-guide}
+%     Citation commands supported by the style file.
+%   }
+% \end{table*}
 
-Many websites where you can find academic papers also allow you to export a bib file for citation or bib formatted entry. Copy this into the \texttt{custom.bib} and you will be able to cite the paper in the \LaTeX{}. You can remove the example entries.
+% Table~\ref{citation-guide} shows the syntax supported by the style files.
+% We encourage you to use the natbib styles.
+% You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
+% You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
+% You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
 
-\subsection{Equations}
+% \subsection{References}
 
-An example equation is shown below:
-\begin{equation}
-  \label{eq:example}
-  A = \pi r^2
-\end{equation}
+% \nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
 
-Labels for equation numbers, sections, subsections, figures and tables
-are all defined with the \verb|\label{label}| command and cross references
-to them are made with the \verb|\ref{label}| command.
-This an example cross-reference to Equation~\ref{eq:example}. You can also write equations inline, like this: $A=\pi r^2$.
+% Many websites where you can find academic papers also allow you to export a bib file for citation or bib formatted entry. Copy this into the \texttt{custom.bib} and you will be able to cite the paper in the \LaTeX{}. You can remove the example entries.
+
+% \subsection{Equations}
+
+% An example equation is shown below:
+% \begin{equation}
+%   \label{eq:example}
+%   A = \pi r^2
+% \end{equation}
+
+% Labels for equation numbers, sections, subsections, figures and tables
+% are all defined with the \verb|\label{label}| command and cross references
+% to them are made with the \verb|\ref{label}| command.
+% This an example cross-reference to Equation~\ref{eq:example}. You can also write equations inline, like this: $A=\pi r^2$.
 
 
 % \section*{Limitations}
@@ -292,11 +305,13 @@ This an example cross-reference to Equation~\ref{eq:example}. You can also write
 
 Write in this section a few sentences describing the contributions of each team member. What did each member work on? Refer to item 7.
 
-Thomas: (Estimator)
-- Feature importer to tensor
-- NN model
-- Hyperoptimization
-- Training function
+Thomas: (\verb|src/estimator/*|)
+\begin{itemize}
+  \item Feature import to tensor
+  \item NN model
+  \item Hyperoptimization
+  \item Training function
+\end{itemize}
 
 
 % Bibliography entries for the entire Anthology, followed by custom entries
