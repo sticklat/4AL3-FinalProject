@@ -225,8 +225,23 @@ fine-tuning network hyperparameters or expanding the training dataset for better
 
 \section{Feedback and Plans}
 
-Write about your plans for the remainder of the project. This should include a discussion of the feedback you received from your TA, and how you plan to improve your approach. Reflect on your implementation and areas for improvement. Refer to item 6. This may be around 0.5 pages.
+% Write about your plans for the remainder of the project. This should include a discussion of the feedback you received from your TA, and how you plan to improve your approach. Reflect on your implementation and areas for improvement. Refer to item 6. This may be around 0.5 pages.
+Our plans for the remainder of the project include several key improvements, the first of which are to how
+we preprocess and engineer features from the YOLO bounding box outputs. Specifically, we plan to add more advanced
+features that better capture the relationship between bounding box geometry and real-world distance. This might include
+features such as the object rotation angle and occlusion level, which could provide additional context for distance estimation.
+We are also considering changing the scale of bounding boxes to be relative to the image size, as well as scaling bounding boxes based
+on known object dimensions (e.g., average car width). These enhancements should provide the model with more
+informative inputs so the model able to perform in a widder range of scenarios.
 
+In regards to model architecture, we plan to experiment with other model types beyond our current neural network. This
+could include decision trees or ensemble methods like random forests or gradient boosting machines talked about in class.
+However given the success of the current model and what has been done in related works, it is likely that this
+kind of estimiation is best suited to simpler neural networks.
+
+Finally, we plan to conduct a more thorough hyperparameter optimization process through random search to fine-tune
+the learning rate, batch size, model shape, activation functions, and regularization techniques. This should help
+us identify the optimal configuration for our model and further improve performance. 
 % \section{Template Notes}
 
 % You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
