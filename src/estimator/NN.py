@@ -11,21 +11,13 @@ class DistanceRegressor(nn.Module):
         """
         super(DistanceRegressor, self).__init__()
         
-        layers = []
-        
-        # First layer: input_dim -> hidden_dim
-        layers.append(nn.Linear(input_dim, hidden_dim))
-        layers.append(activation())
-        
-        # Hidden layers: hidden_dim -> hidden_dim
-        for _ in range(num_hidden_layers - 1):
-            layers.append(nn.Linear(hidden_dim, hidden_dim))
-            layers.append(activation())
-        
-        # Output layer: hidden_dim -> 1
-        layers.append(nn.Linear(hidden_dim, 1))
-        
-        self.model = nn.Sequential(*layers)
+        self.estimator = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            activation(),
+            nn.Linear(hidden_dim, hidden_dim),
+            activation(),
+            nn.Linear(hidden_dim, 1)
+        )
 
     def forward(self, x):
-        return self.model(x)
+        return self.estimator(x)
