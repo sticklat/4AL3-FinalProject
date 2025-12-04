@@ -77,7 +77,7 @@ def train_distance_model(train_loader,val_loader,device="cpu", epochs=50, lr=1e-
 
 if __name__ == "__main__":
     # Hyperparameters
-    epochs = 15
+    epochs = 300
     batch_size = 256
     lr = 1e-3
     
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     # Create DataLoaders
     # Note: num_workers must be 0 when using GPU tensors to avoid CUDA initialization errors in worker processes
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True, persistent_workers=True)
+    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=20, pin_memory=True, persistent_workers=True)
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
     test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
     
