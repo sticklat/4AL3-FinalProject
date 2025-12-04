@@ -40,6 +40,70 @@ def evaluate(model, dataloader, criterion, device):
     avg_loss = running_loss / total_samples
     return avg_loss
 
+@torch.no_grad()
+def compute_depth_metrics(model, dataloader, device):
+    """
+    Compute depth estimation metrics:
+    - RMSE: Root mean squared error (m)
+    - iRMSE: Root mean squared error of inverse depth (1/km)
+    - SILog: Scale invariant logarithmic error (log(m)*100)
+    - sqErrorRel: Relative squared error (percent)
+    - absErrorRel: Relative absolute error (percent)
+    - MSE: Mean squared error (m²)
+    """
+    model.eval()
+    
+    all_predictions = []
+    all_targets = []
+    
+    for input, target in dataloader:
+        input, target = input.to(device), target.to(device)
+        outputs = model(input)
+        all_predictions.append(outputs.squeeze())
+        all_targets.append(target.squeeze())
+    
+    predictions = torch.cat(all_predictions)
+    targets = torch.cat(all_targets)
+    
+    # Clamp predictions to avoid division by zero or negative values
+    predictions = torch.clamp(predictions, min=1e-6)
+    targets = torch.clamp(targets, min=1e-6)
+    
+    # MSE (Mean Squared Error in m²)
+    mse = ((predictions - targets) ** 2).mean()
+    
+    # RMSE (Root Mean Squared Error in m)
+    rmse = torch.sqrt(mse)
+    
+    # iRMSE (Inverse RMSE in 1/km)
+    # Convert from meters to kilometers for inverse depth
+    inv_predictions = 1.0 / (predictions / 1000.0)  # Convert to 1/km
+    inv_targets = 1.0 / (targets / 1000.0)
+    irmse = torch.sqrt(((inv_predictions - inv_targets) ** 2).mean())
+    
+    # SILog (Scale Invariant Logarithmic Error)
+    log_predictions = torch.log(predictions)
+    log_targets = torch.log(targets)
+    si_log = torch.sqrt(((log_predictions - log_targets) ** 2).mean() - (log_predictions - log_targets).mean() ** 2)
+    si_log_percent = si_log * 100
+    
+    # Relative Squared Error (percent)
+    sq_error_rel = (((predictions - targets) ** 2).sum() / ((targets) ** 2).sum() * 100)
+    
+    # Relative Absolute Error (percent)
+    abs_error_rel = ((torch.abs(predictions - targets)).sum() / (torch.abs(targets)).sum() * 100)
+    
+    metrics = {
+        'mse': mse.item(),
+        'rmse': rmse.item(),
+        'irmse': irmse.item(),
+        'silog': si_log_percent.item(),
+        'sq_error_rel': sq_error_rel.item(),
+        'abs_error_rel': abs_error_rel.item()
+    }
+    
+    return metrics
+
 def train_distance_model(train_loader,val_loader,device="cpu", epochs=50, lr=1e-3, input_dim=4,
                          hidden_dim=64, num_hiddenLyr=2, activation=nn.ReLU, verbose=False, return_losses=False):
     """
@@ -105,7 +169,7 @@ if __name__ == "__main__":
 
     # Create DataLoaders
     # Note: num_workers must be 0 when using GPU tensors to avoid CUDA initialization errors in worker processes
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=20, pin_memory=True, persistent_workers=True)
+    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
     test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
     
@@ -114,11 +178,18 @@ if __name__ == "__main__":
     # Train the model
     model = train_distance_model(train_loader, val_loader, input_dim=features.shape[1], device=device, epochs=epochs, lr=lr, verbose=True)
     
-    # Evaluate on test set
-    test_loss = evaluate(model, test_loader, nn.MSELoss(), device)
-    print(f'Test MSE Loss: {test_loss:.4f}')
+    # Evaluate on test set with comprehensive metrics
+    print("\n=== Test Set Evaluation ===")
+    test_metrics = compute_depth_metrics(model, test_loader, device)
+    print(f"Test MSE:            {test_metrics['mse']:.4f} m²")
+    print(f"Test iRMSE:          {test_metrics['irmse']:.4f} (1/km)")
+    print(f"Test RMSE:           {test_metrics['rmse']:.4f} m")
+    print(f"Test SILog:          {test_metrics['silog']:.4f} (log(m)*100)")
+    print(f"Test Sq Error Rel:   {test_metrics['sq_error_rel']:.2f} %")
+    print(f"Test Abs Error Rel:  {test_metrics['abs_error_rel']:.2f} %")
     
     # Try 10 random samples from test set
+    print("\n=== Sample Predictions ===")
     model.eval()
     with torch.no_grad():
         for i in range(10):
@@ -126,7 +197,15 @@ if __name__ == "__main__":
             input, target = test_ds[idx]
             input = input.to(device).unsqueeze(0)  # Add batch dimension
             prediction = model(input)
-            print(f'Sample {i+1}: True Distance = {target.item():.2f}, Predicted Distance = {prediction.item():.2f}')
+            error = abs(prediction.item() - target.item())
+            error_pct = (error / target.item()) * 100
+            print(f'Sample {i+1}: True = {target.item():.2f} m, Predicted = {prediction.item():.2f} m, Error = {error:.2f} m ({error_pct:.1f}%)')
+            
+    # Save the trained model
+    os.makedirs('src/estimator/saved_models', exist_ok=True)
+    model_path = 'src/estimator/saved_models/distance_regressor.pt'
+    torch.save(model.state_dict(), model_path)
+    print(f'\nModel saved to {model_path}')
     
     
     
