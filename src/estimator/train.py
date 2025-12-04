@@ -157,26 +157,32 @@ if __name__ == "__main__":
         
     # Load data from file into VehicleAnnotationDataset
     # Load on CPU first to avoid DataLoader worker process issues
-    dataset_dict = torch.load('src/estimator/dataset/vehicle_dataset_ext.pt')
-    features = dataset_dict['features']
-    targets = dataset_dict['targets']
+    train_dict = torch.load('src/estimator/dataset/vehicle_dataset_ext.pt')
+    features = train_dict['features']
+    targets = train_dict['targets']
     dataset = VehicleAnnotationDataset(features, targets)
     
-    n_train = int(0.7 * len(dataset))
-    n_val = int(0.15 * len(dataset))
-    n_test = len(dataset) - n_train - n_val
-    train_ds, val_ds, test_ds = random_split(dataset, [n_train, n_val, n_test])
+    n_train = int(0.8 * len(dataset))
+    n_val = len(dataset) - n_train
+    train_ds, val_ds = random_split(dataset, [n_train, n_val])
 
     # Create DataLoaders
     # Note: num_workers must be 0 when using GPU tensors to avoid CUDA initialization errors in worker processes
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
-    test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
+    
     
     
     
     # Train the model
     model = train_distance_model(train_loader, val_loader, input_dim=features.shape[1], device=device, epochs=epochs, lr=lr, verbose=True)
+    
+    # Load test dataset
+    test_dict = torch.load('src/estimator/dataset/vehicle_dataset_ext_test.pt')
+    test_features = test_dict['features']
+    test_targets = test_dict['targets']
+    test_ds = VehicleAnnotationDataset(test_features, test_targets)
+    test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
     
     # Evaluate on test set with comprehensive metrics
     print("\n=== Test Set Evaluation ===")
