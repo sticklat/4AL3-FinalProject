@@ -114,23 +114,21 @@ papers with no explanation.
 
 \section{Dataset}
 
-The dataset used in this project is the processed nuScenes-derived subset provided with
-the assignment. Each sample contains a camera frame, YOLO-generated bounding boxes, and
-a corresponding ground-truth distance derived from the dataset’s calibrated depth
-annotations. No additional labeling or annotation was performed, as all required
-metadata was already included.
+The dataset used in this project is the processed collection distributed with the
+assignment. Each sample contains a set of YOLO-generated bounding boxes, an object
+class label, and an associated ground-truth distance value. All annotation work was
+already completed by the course staff, so no manual labeling was required.
 
-The dataset contains multiple object classes (e.g., car, pedestrian, truck), each with
-associated bounding-box coordinates and distances. Prior to model training, we applied
-standard preprocessing: normalization of bounding-box coordinates, computation of
-geometric features (area and aspect ratio), and one-hot encoding of object classes.
-These operations ensure that features lie on comparable scales and improve optimization
-stability.
+Before training, we applied standard preprocessing: normalization of bounding-box
+coordinates, computation of geometric descriptors (area and aspect ratio), and one-hot
+encoding of object classes. These steps ensure that the features lie on comparable
+scales and improve optimization stability.
 
-We did not modify the dataset after the progress-report stage because the provided data
-was neither too easy nor too noisy for our task, and model performance improved
-consistently without needing augmentation or additional sources. The only change from
-earlier work was expanding the training/validation split to support hyperparameter
+The dataset was not modified after the progress report, as it provided sufficient
+variation and challenge for our model. No augmentation or external data sources were
+needed, and the existing size was large enough to support training, validation, and
+testing splits reliably.
+ split to support hyperparameter
 tuning during final experiments.
 
 
