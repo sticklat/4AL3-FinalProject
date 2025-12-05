@@ -328,35 +328,60 @@ DisNet         & 13.72 & 10.52 & 10.90 \\
 
 \section{Evaluation}
 
-To evaluate our model, we follow an 80/20 train–validation split on the processed
-nuScenes-derived dataset provided with the assignment. The dataset contains object
-detections from several classes (e.g., car, pedestrian, truck), and because it is
-reasonably large and well-shuffled, the label distribution in both splits remains
-representative of the full dataset. A separate held-out test set, also provided with
-the assignment, is used only for final reporting and not for model selection. This
-ensures that our evaluation measures true generalization rather than overfitting to
-validation data.
+To rigorously assess the performance of our monocular distance estimation model, we
+use a structured evaluation pipeline consisting of dataset splitting, metric computation,
+and final held-out testing. Our goal is to measure both absolute prediction accuracy and
+generalization quality across object types and distance ranges.
 
-We did not use cross-validation because the dataset is sufficiently large for a
-single split to provide stable estimates of model performance, and because cross-validation
-would significantly increase computational cost without clear benefit for this task.
-Instead, we rely on repeated training runs during hyperparameter tuning to verify that
-performance remains consistent across random seeds.
+\subsection{Train--Validation Split and Test Protocol}
 
-For quantitative evaluation, we adopt the standard depth-estimation metrics used in
-prior work: Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), inverse RMSE
-(iRMSE), Scale-Invariant Logarithmic Error (SILog), relative squared error, and relative
-absolute error. These metrics capture both absolute prediction quality (e.g., RMSE) and
-scale-sensitive effects (e.g., SILog, iRMSE), allowing us to understand the model’s
-behavior across near and far distances.
+We follow an 80/20 train--validation split on the processed nuScenes-derived dataset
+provided with the assignment. Because the dataset contains thousands of annotated
+detections across multiple classes (e.g., car, pedestrian, truck), the resulting splits
+remain representative of the full label distribution. This ensures that validation metrics
+reflect real-world diversity rather than bias from class imbalance.
 
-The metrics used in our progress report—primarily MAE and RMSE—proved to be adequate
-for guiding early model development, but the additional depth-specific metrics included
-in our final evaluation provide a more complete picture of performance. In particular,
-SILog and iRMSE highlight differences in how the model handles objects at different
-distance ranges. Across all metrics, our final model achieves strong generalization,
-with validation and test performance closely aligned, indicating that the model is not
-overfitting and that our evaluation strategy is appropriate for this task.
+A separate held-out test set---also provided with the assignment---is reserved strictly
+for final reporting. No hyperparameter tuning or model selection is performed on the
+test set. This separation ensures that the reported performance reflects true model
+generalization rather than overfitting to validation data.
+
+We do not employ $k$-fold cross-validation because the dataset is sufficiently large
+for a single split to provide stable estimates, and because cross-validation would
+significantly increase computational cost without yielding meaningful improvements
+for this particular regression task.
+
+\subsection{Evaluation Metrics}
+
+Following conventions in monocular depth estimation research, we evaluate the model
+using a comprehensive suite of metrics:
+
+\begin{itemize}[noitemsep, topsep=0pt, leftmargin=1.5em]
+    \item \textbf{Mean Absolute Error (MAE)}: average absolute distance error (m)
+    \item \textbf{Root Mean Squared Error (RMSE)}: penalizes large errors more heavily (m)
+    \item \textbf{iRMSE}: RMSE of inverse depth (1/km), emphasizing distant-object accuracy
+    \item \textbf{SILog}: scale-invariant log error, capturing multiplicative error patterns
+    \item \textbf{Relative Squared Error}: percent squared error relative to ground truth
+    \item \textbf{Relative Absolute Error}: percent absolute error relative to ground truth
+\end{itemize}
+
+These metrics allow us to quantify both absolute prediction quality and stability across
+depth ranges. For example, MAE and RMSE capture overall accuracy, while iRMSE and SILog
+reveal how consistently the model handles near vs.\ far objects.
+
+\subsection{Metric Justification and Comparison to Progress Report}
+
+Earlier stages of the project relied primarily on MAE and RMSE, which proved adequate
+for guiding initial model design. However, the additional depth-specific metrics
+included in the final evaluation offer a more complete view of performance. In
+particular, SILog highlights scale sensitivity, and iRMSE provides insight into how
+small deviations at large distances can disproportionately affect inverse-depth error.
+
+Across all metrics, our final model shows strong alignment between validation and test
+performance, indicating that the model generalizes well and is not overfitting. The
+improvements in error consistency across distance ranges validate our expanded
+evaluation protocol and support the robustness of our approach.
+
 
 
 % We evaluate our model using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) between the predicted and 
