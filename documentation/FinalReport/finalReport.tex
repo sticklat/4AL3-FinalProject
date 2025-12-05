@@ -410,14 +410,36 @@ Overall, our progress shows that a simpler approach—using only bounding-box fe
 
 \section{Error Analysis}
 
-\color{red} TODO:Fill in this section.\color{black}
+%\color{red} TODO:Fill in this section.\color{black}
+%
+%Describe how you systematically examine the errors your model
+%makes and provide supporting figures, stats, examples (e.g., confusion matrices, qualitative
+%sample of test cases with high error margins, etc). What does your model appear to be good
+%at? What does it seem to be bad at? How does the performance of your models differ? What
+%patterns do you notice in the errors your model seems to make? What do you think you
+%could do to specifically address those issues if you were to continue working on this model?
+%
 
-Describe how you systematically examine the errors your model
-makes and provide supporting figures, stats, examples (e.g., confusion matrices, qualitative
-sample of test cases with high error margins, etc). What does your model appear to be good
-at? What does it seem to be bad at? How does the performance of your models differ? What
-patterns do you notice in the errors your model seems to make? What do you think you
-could do to specifically address those issues if you were to continue working on this model?
+
+To better understand the behavior of our distance-estimation model, we analyzed the predictions on the held-out test set and examined where the model performs well and where errors tend to occur. Overall, the model achieves strong accuracy on most samples, but several consistent patterns emerged.
+
+\subsection{Good Performance}
+The model performs best on large, close-range objects such as cars and trucks. These objects produce bounding boxes with stable geometric patterns—larger box areas and lower variance in aspect ratios—making it easier for the network to infer distances. For these classes, the predictions typically fall within a small error range, and both MAE and RMSE remain low. The model also handles mid-range distances reliably, indicating that the bounding-box features provide enough information across a wide portion of the depth spectrum.
+
+\subsection{Common Error Patterns}
+Most significant errors occur in two scenarios:
+
+Small or distant objects: When objects appear far from the camera, their bounding boxes become extremely small. This reduces the amount of geometric information available, leading to higher uncertainty. Errors tend to increase sharply for distances above a certain threshold because small differences in bounding-box size correspond to large differences in real-world distance.
+
+Vertical or unusual aspect ratios: Pedestrians and bicycles sometimes produce tall, narrow bounding boxes. These shapes vary more from frame to frame depending on pose or partial occlusion, which can confuse the model. Although one-hot class labels help, they do not fully eliminate variability introduced by occlusions or unusual viewpoints.
+\subsection{Failure Cases and Observations}
+We also examined samples with the highest prediction errors. In nearly all of these cases, the object was either partially cut off at the image boundary or heavily occluded by another object. As YOLO bounding boxes do not encode occlusion information, the model must infer distance from incomplete geometric cues, which naturally leads to misestimation. Another source of error is overlapping detections from crowded scenes, where changes in bounding-box dimensions can be caused by scene structure rather than true distance changes.
+
+\subsection{Model Limitations and Future Improvements}
+The patterns above suggest that while bounding-box features are effective for many cases, they do not capture enough information for distant, small, or heavily occluded objects. If we were to extend this work, incorporating additional cues—such as depth priors from MiDaS (Ranftl et al., 2022), temporal information from consecutive frames, or normalized object size statistics—could help reduce these errors. Data augmentation that simulates occlusions or long-range objects may also improve robustness.
+
+Overall, the error analysis confirms that our model performs well for typical ADAS-relevant distances and object sizes, but predictable challenges remain for edge cases where geometric information is inherently limited.
+
 
 Our model have got a astonishing accuracy on the test set selected from the dataset we used. We discussed about it in the tutorial section with TA for a whole section, and we did not find any problem in our code. There is no leakage of data from test set, there were only two bounding box in the datagiven were identical after we fully examined the dataset, which may indicate problem in the dataset, but its still not the reason for the great accuracy. We do think its the problem of the dataset, given all the examples in it gives well arranged, clear bounding boxes, the angle of the items were also kind of arranged, the human were all standing straight, the vans and the cars were all facing the camera with certain angle, which might explains the accuracy we achieved with the model. 
 
