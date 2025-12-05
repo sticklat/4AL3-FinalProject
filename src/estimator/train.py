@@ -135,9 +135,9 @@ def train_distance_model(train_loader,val_loader,device="cpu", epochs=50, lr=1e-
         if verbose:
             print(f"Epoch {epoch+1:03d} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}")
             
-        if (sum(val_losses[-5:]) / 5) < 5e-2:
+        if (sum(val_losses[-5:]) / 5) < 2e-2:
             if verbose:
-                print("Training loss below 1e-6, stopping early.")
+                print("Training loss below 2e-2, stopping early.")
             break
 
     if return_losses:
