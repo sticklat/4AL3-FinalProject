@@ -419,6 +419,12 @@ at? What does it seem to be bad at? How does the performance of your models diff
 patterns do you notice in the errors your model seems to make? What do you think you
 could do to specifically address those issues if you were to continue working on this model?
 
+Our model have got a astonishing accuracy on the test set selected from the dataset we used. We discussed about it in the tutorial section with TA for a whole section, and we did not find any problem in our code. There is no leakage of data from test set, there were only two bounding box in the datagiven were identical after we fully examined the dataset, which may indicate problem in the dataset, but its still not the reason for the great accuracy. We do think its the problem of the dataset, given all the examples in it gives well arranged, clear bounding boxes, the angle of the items were also kind of arranged, the human were all standing straight, the vans and the cars were all facing the camera with certain angle, which might explains the accuracy we achieved with the model. 
+
+
+
+
+
 \section*{Team Contributions}
 
 Thomas: (\verb|src/estimator/*|)
