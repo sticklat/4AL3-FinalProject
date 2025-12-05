@@ -242,7 +242,7 @@ All models were trained using PyTorch with the following setup:
 
 \begin{itemize}[noitemsep,topsep=0pt,leftmargin=1.5em]
     \item \textbf{Loss function:} Mean Squared Error (MSE)
-    \item \textbf{Optimizer:} Adam ($\alpha = 10^{-3}$)
+    \item \textbf{Optimizer:} Adam ($\beta_1 = 0.9$, $\beta_2 = 0.999$, weight\_decay$=10^{-5}$)
     \item \textbf{Batch size:} 256
     \item \textbf{Epochs:} 300
     \item \textbf{Train/Validation split:} 80/20
