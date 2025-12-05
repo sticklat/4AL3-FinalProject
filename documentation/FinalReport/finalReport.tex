@@ -29,7 +29,7 @@
 %
 % and set <dim> to something 5cm or larger.
 
-\title{Group 64's Progress Report:\\Monocular Object Distance Estimation Using YOLO Bounding Boxes}
+\title{Group 64's Final Report:\\Monocular Object Distance Estimation Using YOLO Bounding Boxes}
 
 
 \author{Thomas Stickland, Oliver (Chengze) Zhao, Larry (Yicheng) Liu \\
@@ -83,23 +83,50 @@
 % Here, write a brief introduction to the problem you are solving. This can be adapted from your problem description and motivation from the original proposal. This should be around 0.25-0.5 pages.
 % \color{red} TODO:Update.\color{black}
 
-	Understanding the distance to surrounding objects is a fundamental requirement for autonomous driving and Advanced Driver Assistance Systems (ADAS). Traditional sensing modalities such as LiDAR are widely regarded as the most accurate sources for depth estimation; however, their high cost and limited suitability for consumer-grade vehicles create barriers to large-scale adoption. Radar offers a more affordable alternative, yet its relatively low spatial resolution and susceptibility to reflections and interference restrict its ability to deliver fine-grained distance estimates (Haseeb et al., 2018). In contrast, monocular cameras are inexpensive, lightweight, and already commonly deployed in modern automotive perception stacks. The challenge, however, lies in extracting reliable distance information from inherently ambiguous 2D images (Godard et al., 2017).
+Understanding the distance to surrounding objects is a fundamental requirement for autonomous driving and 
+Advanced Driver Assistance Systems (ADAS). Traditional sensing modalities such as LiDAR are widely regarded
+as the most accurate sources for depth estimation; however, their high cost and limited suitability for
+consumer-grade vehicles create barriers to large-scale adoption. Radar offers a more affordable alternative,
+yet its relatively low spatial resolution and susceptibility to reflections and interference restrict its ability
+to deliver fine-grained distance estimates\cite{Haseeb2018DisNetAN}. In contrast, monocular cameras are inexpensive,
+lightweight, and already commonly deployed in modern automotive perception stacks. The challenge, however, lies
+in extracting reliable distance information from inherently ambiguous 2D images\cite{godard2017}.
 
-Recent research has explored a spectrum of approaches to monocular distance estimation. End-to-end depth-map regression models—such as the unsupervised framework proposed by Godard et al. (2017)—demonstrate high performance but require heavy computation and large training datasets, making them less practical for real-time embedded deployment. More lightweight object-based approaches instead focus on predicting distances from detected objects rather than full-scene depth. For example, the Disnet model (Haseeb et al., 2018) utilizes YOLO-based object detection as a preprocessing step before a neural network regresses distance values, and later work (Franke et al., 2021) improves on this pipeline through dataset augmentation and targeted architectural refinements. Hybrid approaches have also emerged: ODENet (dos Santos Caraíba & Cardoso, 2025) combines MiDaS-generated depth maps (Ranftl et al., 2022) with YOLOv8 detections (Jocher et al., 2023), aiming to integrate global depth cues with object-specific features.
+Recent research has explored a spectrum of approaches to monocular distance estimation. End-to-end depth-map
+regression models—such as the unsupervised framework proposed by\cite{godard2017}—demonstrate high performance
+but require heavy computation and large training datasets, making them less practical for real-time embedded
+deployment. More lightweight object-based approaches instead focus on predicting distances from detected
+objects rather than full-scene depth. For example, the Disnet model (Haseeb et al., 2018) utilizes YOLO-based
+object detection as a preprocessing step before a neural network regresses distance values, and later
+work\cite{Franke2021} improves on this pipeline through dataset augmentation and targeted architectural
+refinements. Hybrid approaches have also emerged: ODENet\cite{Felipe2025} combines MiDaS-generated depth
+maps\cite{Ranftl2022} with YOLOv8 detections\cite{yolov8_ultralytics}, aiming to integrate global depth
+cues with object-specific features.
 
-Building on these insights, our project focuses on a simplified yet efficient object-based distance estimator. Instead of predicting dense depth maps, we investigate whether bounding-box geometry and object-class information can provide sufficient cues for accurate monocular distance prediction. This direction is motivated by the desire to create a model that is computationally lightweight, compatible with real-time automotive perception systems, and easily integrated into larger sensor-fusion frameworks combining camera and radar measurements. Our preliminary findings—developed after the progress report—were shaped significantly by prior studies showing that bounding-box features encode meaningful geometric information for distance regression, and by evidence that YOLO-based pipelines remain state-of-the-art for fast object detection.
+Building on these insights, our project focuses on a simplified yet efficient object-based distance estimator.
+Instead of predicting dense depth maps, we investigate whether bounding-box geometry and object-class information
+can provide sufficient cues for accurate monocular distance prediction. This direction is motivated by the desire
+to create a model that is computationally lightweight, compatible with real-time automotive perception systems,
+and easily integrated into larger sensor-fusion frameworks combining camera and radar measurements. Our preliminary
+findings—developed after the progress report—were shaped significantly by prior studies showing that bounding-box
+features encode meaningful geometric information for distance regression, and by evidence that YOLO-based pipelines
+remain state-of-the-art for fast object detection.
 
-Overall, this work aims to evaluate the feasibility of using only YOLO bounding-box features as inputs to a neural network for distance estimation, contributing to the broader goal of developing cost-effective monocular perception for ADAS applications. The related literature not only motivated our model design but also influenced architectural decisions, dataset preprocessing, and evaluation planning. By situating our approach within this research landscape, we highlight the balance between simplicity, accuracy, and real-time operation that our system seeks to achieve.
+Overall, this work aims to evaluate the feasibility of using only YOLO bounding-box features as inputs to a neural
+network for distance estimation, contributing to the broader goal of developing cost-effective monocular perception
+for ADAS applications. The related literature not only motivated our model design but also influenced architectural
+decisions, dataset preprocessing, and evaluation planning. By situating our approach within this research landscape,
+we highlight the balance between simplicity, accuracy, and real-time operation that our system seeks to achieve.
 
 
 
-Your report should have an introduction. You may largely copy the
-motivation and problem description from your previous reports. Write about previous work
-on your task or the most related task you can find. Note that you should include at least
-7 references in your report. Did you discover anything in related work that influenced your
-direction after the progress report was due? References should be integrated as part of the
-discussion of the context of your work. They should not simply be listed as a set of relevant
-papers with no explanation.
+% Your report should have an introduction. You may largely copy the
+% motivation and problem description from your previous reports. Write about previous work
+% on your task or the most related task you can find. Note that you should include at least
+% 7 references in your report. Did you discover anything in related work that influenced your
+% direction after the progress report was due? References should be integrated as part of the
+% discussion of the context of your work. They should not simply be listed as a set of relevant
+% papers with no explanation.
 
 % Vehicles with ADAS (Advanced Driving Assistance Systems) capabilities need to able to know the distance to objects around them in order to navigate safely. While LIDAR
 % sensors are often viewed as the gold standard for distance estimation, they are expensive and not always feasible for consumer vehicles.
