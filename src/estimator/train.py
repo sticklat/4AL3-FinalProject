@@ -66,8 +66,8 @@ def compute_depth_metrics(model, dataloader, device):
     targets = torch.cat(all_targets)
     
     # Clamp predictions to avoid division by zero or negative values
-    predictions = torch.clamp(predictions, min=1e-6)
-    targets = torch.clamp(targets, min=1e-6)
+    # predictions = torch.clamp(predictions, min=1e-6)
+    # targets = torch.clamp(targets, min=1e-6)
     
     # MSE (Mean Squared Error in m²)
     mse = ((predictions - targets) ** 2).mean()
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         
     # Load data from file into VehicleAnnotationDataset
     # Load on CPU first to avoid DataLoader worker process issues
-    train_dict = torch.load('src/estimator/dataset/vehicle_dataset_ext.pt')
+    train_dict = torch.load('src/estimator/dataset/vehicle_dataset_ext_train.pt')
     features = train_dict['features']
     targets = train_dict['targets']
     dataset = VehicleAnnotationDataset(features, targets)
