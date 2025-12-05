@@ -374,12 +374,21 @@ overfitting and that our evaluation strategy is appropriate for this task.
 % fine-tuning network hyperparameters or expanding the training dataset for better generalization.
 
 \section{Progress}
+%
+%\color{red} TODO:Fill in this section.\color{black}
+%
+%Reflect on your plan from your progress report. Did you follow-through on
+%your plan? Did your plan change course? Why
+%
+Our work followed the general direction outlined in the progress report, but several parts of the plan changed as we gained more insight into the dataset and model behavior. Initially, we planned to experiment with both geometric and appearance-based features, try alternative network architectures, and possibly use dataset augmentation if performance was insufficient. However, our final approach became more focused and simpler than originally expected.
 
-\color{red} TODO:Fill in this section.\color{black}
+First, we found early on that geometric features from YOLO bounding boxes—such as size, aspect ratio, and class labels—were already strong predictors of distance. Because of this, adding appearance-based information or image patches did not seem necessary, and would have increased model complexity without clear benefits. This observation is consistent with previous work like DisNet, which also relies mainly on bounding-box–level cues. As a result, we shifted fully toward refining a multilayer perceptron (MLP) instead of exploring more complex hybrid or convolution-based models.
 
-Reflect on your plan from your progress report. Did you follow-through on
-your plan? Did your plan change course? Why
+Second, although we originally considered combining depth maps (e.g., MiDaS) with object detections, we did not pursue this direction. The provided dataset already contained reliable ground-truth distances, and our simpler model achieved strong performance without additional depth information. Given our time and compute limits, focusing on improving the MLP architecture was the most effective strategy.
 
+Finally, we expected that dataset augmentation or external datasets might be needed to improve generalization. In practice, the dataset supplied with the assignment was large and diverse enough, and our model performed consistently across train, validation, and test sets. This made augmentation unnecessary.
+
+Overall, our progress shows that a simpler approach—using only bounding-box features and a well-tuned MLP—was sufficient and even outperformed prior baselines. In hindsight, we could have reached this conclusion earlier, but the initial exploration helped confirm which directions were unnecessary. These findings also suggest that bounding-box–based monocular distance estimation is a practical and efficient solution for real-time ADAS settings.
 % Write about your plans for the remainder of the project. This should include a discussion of the feedback you received from your TA, and how you plan to improve your approach. Reflect on your implementation and areas for improvement. Refer to item 6. This may be around 0.5 pages.
 % Our plans for the remainder of the project include several key improvements, the first of which are to how
 % we preprocess and engineer features from the YOLO bounding box outputs. Specifically, we plan to add more advanced
