@@ -106,9 +106,9 @@ decision to investigate a bounding-box–only estimation pipeline.
 Hybrid approaches have also emerged: ODENet\cite{Felipe2025} combines MiDaS-generated depth
 maps\cite{Ranftl2022} with YOLOv8 detections\cite{yolov8_ultralytics}, aiming to integrate global depth
 cues with object-specific features. There have also been recent applications of monocular distance estimation
-in other related domains, such as in unmanned surface vehicles where the YOLOv7 and YOLOv9 models were used for their
-base layers but had the top layers replaces and retrained to also output distance estimations in addition to object detection
-\cite{kiefer2025approximatesupervisedobjectdistance}.
+in other related domains, such as in unmanned surface vehicles where the YOLOv7\cite{wang2022yolov7} and YOLOv9\cite{wang2024yolov9}
+models were used for their base layers but had the top layers replaces and retrained to also output distance
+estimations in addition to object detection\cite{kiefer2025approximatesupervisedobjectdistance}.
 
 Building on these insights, our project focuses on a simplified yet efficient object-based distance estimator.
 Instead of predicting dense depth maps, we investigate whether bounding-box geometry and object-class information
@@ -151,7 +151,7 @@ we highlight the balance between simplicity, accuracy, and real-time operation t
 The dataset used in this project is the processed collection distributed with the
 assignment. Each sample contains a set of YOLO-generated bounding boxes, an object
 class label, and an associated ground-truth distance value. All annotation work was
-already completed by the course staff, so no manual labeling was required.
+already completed via online datasets using the source KITTI data, so no manual labeling was required.
 
 Before training, we applied standard preprocessing: normalization of bounding-box
 coordinates, computation of geometric descriptors (area and aspect ratio), and one-hot
@@ -161,9 +161,7 @@ scales and improve optimization stability.
 The dataset was not modified after the progress report, as it provided sufficient
 variation and challenge for our model. No augmentation or external data sources were
 needed, and the existing size was large enough to support training, validation, and
-testing splits reliably.
- split to support hyperparameter
-tuning during final experiments.
+testing splits reliably to support hyperparameter tuning during final experiments.
 
 
 % Our dataset is based on a processed subset of the \textit{nuScenes} autonomous driving dataset, which provides real-world 
@@ -174,7 +172,7 @@ tuning during final experiments.
 \section{Features and Inputs}
 
 Each detected object is represented as a compact feature vector derived solely from
-YOLOv8 outputs. Our model inputs include: (1) normalized bounding-box coordinates
+YOLOv8\cite{yolov8_ultralytics} outputs. Our model inputs include: (1) normalized bounding-box coordinates
 $(x_{\min}, y_{\min}, x_{\max}, y_{\max})$, (2) bounding-box area and aspect ratio, and
 (3) a one-hot encoded class label. These features were chosen because they capture the
 geometric cues most strongly correlated with object distance in monocular images—larger
@@ -185,8 +183,8 @@ No learned feature extraction was required, as all features are explicitly engin
 from deterministic geometric properties. Feature selection was minimal but intentional:
 we avoided adding appearance-based cues or raw pixels so that the task focuses
 specifically on bounding-box–level depth estimation, consistent with prior work.
-Although we experimented with including additional ratios and shape descriptors, the
-final feature set provided the best trade-off between simplicity and predictive power.
+Although we experimented with including additional ratios, orientation and shape descriptors, the
+final feature set provided the best trade-off between simplicity, stability, and predictive power.
 
 
 % Each input sample to our model is derived from YOLOv8 detections and represented as a compact feature vector containing 
@@ -390,70 +388,43 @@ improvements in error consistency across distance ranges validate our expanded
 evaluation protocol and support the robustness of our approach.
 
 
-
-% We evaluate our model using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) between the predicted and 
-% ground-truth object distances. The ground-truth annotations were derived from the normalized dataset provided in 
-% \texttt{annotations\_with\_id.csv}, and predictions were generated through our neural network model using YOLOv8-based 
-% bounding box features. After running the evaluation pipeline, the model achieved an MAE of approximately 1.52 and an RMSE 
-% of 2.18, indicating strong predictive performance given the simplicity of the input features. Qualitatively, most predictions 
-% fall within $\pm10\%$ of the true distance, demonstrating the model’s ability to infer depth information from spatial geometry 
-% and class cues alone. 
-
-% For comparison, the original Disnet implementation reported a Mean Absolute Error around 2.0 after convergence across networks 
-% with 3–10 hidden layers. Our model achieved a lower MAE of 1.52, suggesting improved distance estimation accuracy despite using 
-% a simpler architecture and more compact input representation. These results validate the feasibility of a lightweight, 
-% bounding-box-based approach to monocular distance estimation and provide a strong baseline for future experiments, such as 
-% fine-tuning network hyperparameters or expanding the training dataset for better generalization.
-
 \section{Progress}
-%
-%\color{red} TODO:Fill in this section.\color{black}
-%
-%Reflect on your plan from your progress report. Did you follow-through on
-%your plan? Did your plan change course? Why
-%
-Our work followed the general direction outlined in the progress report, but several parts of the plan changed as we gained more insight into the dataset and model behavior. Initially, we planned to experiment with both geometric and appearance-based features, try alternative network architectures, and possibly use dataset augmentation if performance was insufficient. However, our final approach became more focused and simpler than originally expected.
 
-First, we found early on that geometric features from YOLO bounding boxes—such as size, aspect ratio, and class labels—were already strong predictors of distance. Because of this, adding appearance-based information or image patches did not seem necessary, and would have increased model complexity without clear benefits. This observation is consistent with previous work like DisNet, which also relies mainly on bounding-box–level cues. As a result, we shifted fully toward refining a multilayer perceptron (MLP) instead of exploring more complex hybrid or convolution-based models.
+Our work followed the general direction outlined in the progress report, but several parts of the plan changed
+as we gained more insight into the dataset and model behavior. Initially, we planned to experiment with both
+geometric and appearance-based features, try alternative network architectures, and possibly use dataset
+augmentation if performance was insufficient. However, our final approach became more focused and simpler than
+originally expected.
 
-Second, although we originally considered combining depth maps (e.g., MiDaS) with object detections, we did not pursue this direction. The provided dataset already contained reliable ground-truth distances, and our simpler model achieved strong performance without additional depth information. Given our time and compute limits, focusing on improving the MLP architecture was the most effective strategy.
+First, we found early on that geometric features from YOLO bounding boxes—such as size, aspect ratio, and class
+labels—were already strong predictors of distance. Because of this, adding appearance-based information or
+image patches actaully worsened performance and stability, and would have increased model complexity without
+clear benefits. This observation is consistent with previous work like DisNet, which also relies mainly on
+bounding-box–level cues. As a result, we shifted fully toward refining a multilayer perceptron (MLP) instead
+of exploring more complex hybrid or convolution-based models.
 
-Finally, we expected that dataset augmentation or external datasets might be needed to improve generalization. In practice, the dataset supplied with the assignment was large and diverse enough, and our model performed consistently across train, validation, and test sets. This made augmentation unnecessary.
+Second, although we originally considered combining depth maps (e.g., MiDaS) with object detections, we did
+not pursue this direction. The provided dataset already contained reliable ground-truth distances, and our
+simpler model achieved strong performance without additional depth information. Given our time and compute
+limits, focusing on improving the MLP architecture was the most effective strategy.
 
-Overall, our progress shows that a simpler approach—using only bounding-box features and a well-tuned MLP—was sufficient and even outperformed prior baselines. In hindsight, we could have reached this conclusion earlier, but the initial exploration helped confirm which directions were unnecessary. These findings also suggest that bounding-box–based monocular distance estimation is a practical and efficient solution for real-time ADAS settings.
-% Write about your plans for the remainder of the project. This should include a discussion of the feedback you received from your TA, and how you plan to improve your approach. Reflect on your implementation and areas for improvement. Refer to item 6. This may be around 0.5 pages.
-% Our plans for the remainder of the project include several key improvements, the first of which are to how
-% we preprocess and engineer features from the YOLO bounding box outputs. Specifically, we plan to add more advanced
-% features that better capture the relationship between bounding box geometry and real-world distance. This might include
-% features such as the object rotation angle and occlusion level, which could provide additional context for distance estimation.
-% We are also considering changing the scale of bounding boxes to be relative to the image size, as well as scaling bounding boxes based
-% on known object dimensions (e.g., average car width). These enhancements should provide the model with more
-% informative inputs so the model able to perform in a widder range of scenarios.
+Finally, we expected that dataset augmentation or external datasets might be needed to improve generalization.
+In practice, the dataset supplied with the assignment was large and diverse enough, and our model performed
+consistently across train, validation, and test sets. This made augmentation unnecessary.
 
-% In regards to model architecture, we plan to experiment with other model types beyond our current neural network. This
-% could include decision trees or ensemble methods like random forests or gradient boosting machines talked about in class.
-% However given the success of the current model and what has been done in related works, it is likely that this
-% kind of estimiation is best suited to simpler neural networks.
-
-% Finally, we plan to conduct a more thorough hyperparameter optimization process through random search to fine-tune
-% the learning rate, batch size, model shape, activation functions, and regularization techniques. This should help
-% us identify the optimal configuration for our model and further improve performance. 
+Overall, our progress shows that a simpler approach—using only bounding-box features and a well-tuned MLP—was
+sufficient and even outperformed prior baselines. In hindsight, we could have reached this conclusion earlier,
+but the initial exploration helped confirm which directions were unnecessary. These findings also suggest that
+bounding-box–based monocular distance estimation is a practical and efficient solution for real-time ADAS settings.
 
 
 \section{Error Analysis}
 
-%\color{red} TODO:Fill in this section.\color{black}
-%
-%Describe how you systematically examine the errors your model
-%makes and provide supporting figures, stats, examples (e.g., confusion matrices, qualitative
-%sample of test cases with high error margins, etc). What does your model appear to be good
-%at? What does it seem to be bad at? How does the performance of your models differ? What
-%patterns do you notice in the errors your model seems to make? What do you think you
-%could do to specifically address those issues if you were to continue working on this model?
-%
 
 
-To better understand the behavior of our distance-estimation model, we analyzed the predictions on the held-out test set and examined where the model performs well and where errors tend to occur. Overall, the model achieves strong accuracy on most samples, but several consistent patterns emerged.
+To better understand the behavior of our distance-estimation model, we analyzed the predictions on the
+held-out test set and examined where the model performs well and where errors tend to occur. Overall, the
+model achieves strong accuracy on most samples, but several consistent patterns emerged.
 
 \subsection{Good Performance}
 The model performs best on large, close-range objects such as cars and trucks. These objects produce bounding boxes with stable geometric patterns—larger box areas and lower variance in aspect ratios—making it easier for the network to infer distances. For these classes, the predictions typically fall within a small error range, and both MAE and RMSE remain low. The model also handles mid-range distances reliably, indicating that the bounding-box features provide enough information across a wide portion of the depth spectrum.
@@ -461,7 +432,9 @@ The model performs best on large, close-range objects such as cars and trucks. T
 \subsection{Common Error Patterns}
 Most significant errors occur in two scenarios:
 
-Small or distant objects: When objects appear far from the camera, their bounding boxes become extremely small. This reduces the amount of geometric information available, leading to higher uncertainty. Errors tend to increase sharply for distances above a certain threshold because small differences in bounding-box size correspond to large differences in real-world distance.
+Small or distant objects: When objects appear far from the camera, their bounding boxes become extremely small.
+This reduces the amount of geometric information available, leading to higher uncertainty. Errors tend to increase
+sharply for distances above a certain threshold because small differences in bounding-box size correspond to large differences in real-world distance.
 
 Vertical or unusual aspect ratios: Pedestrians and bicycles sometimes produce tall, narrow bounding boxes. These shapes vary more from frame to frame depending on pose or partial occlusion, which can confuse the model. Although one-hot class labels help, they do not fully eliminate variability introduced by occlusions or unusual viewpoints.
 \subsection{Failure Cases and Observations}
@@ -480,7 +453,10 @@ sizes, but predictable challenges remain for edge cases where geometric informat
 \subsection{Gap Between Dataset Performance and Real-world Scenarios}
 Although our model achieves very high accuracy on the provided dataset, this performance does not fully translate to real-world ADAS environments. The dataset is highly structured: objects are clearly visible, minimally occluded, consistently oriented, and captured under stable lighting. As a result, bounding-box geometry exhibits simple and monotonic relationships with distance, making the learning task substantially easier.
 
-In contrast, real driving scenes contain significant sources of variability—such as occlusions, diverse viewpoints, articulation of pedestrians, lighting changes, motion blur, and dense traffic—that lead to unstable or noisy bounding boxes. Under these conditions, box size and aspect ratio no longer reliably reflect true object distance. Therefore, a model trained solely on clean geometric cues may struggle to generalize beyond the constrained dataset.
+In contrast, real driving scenes contain significant sources of variability—such as occlusions, diverse
+viewpoints, articulation of pedestrians, lighting changes, motion blur, and dense traffic—that lead to
+unstable or noisy bounding boxes. Under these conditions, box size and aspect ratio no longer reliably reflect
+true object distance. Therefore, a model trained solely on clean geometric cues may struggle to generalize beyond the constrained dataset.
 
 To bridge this gap, future work should incorporate additional information (e.g., depth priors, temporal cues, or sensor fusion) and evaluate the model on more diverse, realistic datasets to ensure robustness in practical ADAS applications.
 
