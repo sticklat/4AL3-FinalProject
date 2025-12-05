@@ -99,7 +99,11 @@ deployment. More lightweight object-based approaches instead focus on predicting
 objects rather than full-scene depth. For example, the Disnet model (Haseeb et al., 2018) utilizes YOLO-based
 object detection as a preprocessing step before a neural network regresses distance values, and later
 work\cite{Franke2021} improves on this pipeline through dataset augmentation and targeted architectural
-refinements. Hybrid approaches have also emerged: ODENet\cite{Felipe2025} combines MiDaS-generated depth
+refinements. Fang et al.\ \cite{fang2019bboxdistance} show that even simple geometric descriptors of detected 
+objects encode sufficient scale information for estimating real-world distance, further motivating our 
+decision to investigate a bounding-box–only estimation pipeline.
+
+Hybrid approaches have also emerged: ODENet\cite{Felipe2025} combines MiDaS-generated depth
 maps\cite{Ranftl2022} with YOLOv8 detections\cite{yolov8_ultralytics}, aiming to integrate global depth
 cues with object-specific features.
 
@@ -469,6 +473,14 @@ objects may also improve robustness.
 
 Overall, the error analysis confirms that our model performs well for typical ADAS-relevant distances and object
 sizes, but predictable challenges remain for edge cases where geometric information is inherently limited.
+
+\subsection{Gap Between Dataset Performance and Real-world Scenarios}
+Although our model achieves very high accuracy on the provided dataset, this performance does not fully translate to real-world ADAS environments. The dataset is highly structured: objects are clearly visible, minimally occluded, consistently oriented, and captured under stable lighting. As a result, bounding-box geometry exhibits simple and monotonic relationships with distance, making the learning task substantially easier.
+
+In contrast, real driving scenes contain significant sources of variability—such as occlusions, diverse viewpoints, articulation of pedestrians, lighting changes, motion blur, and dense traffic—that lead to unstable or noisy bounding boxes. Under these conditions, box size and aspect ratio no longer reliably reflect true object distance. Therefore, a model trained solely on clean geometric cues may struggle to generalize beyond the constrained dataset.
+
+To bridge this gap, future work should incorporate additional information (e.g., depth priors, temporal cues, or sensor fusion) and evaluate the model on more diverse, realistic datasets to ensure robustness in practical ADAS applications.
+
 
 \subsection{Unexpected High Accuracy}
 Our model achieved an astonishingly accuracy on the test set selected from the dataset we used. We discussed about it
