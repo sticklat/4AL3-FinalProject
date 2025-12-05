@@ -436,13 +436,29 @@ Vertical or unusual aspect ratios: Pedestrians and bicycles sometimes produce ta
 We also examined samples with the highest prediction errors. In nearly all of these cases, the object was either partially cut off at the image boundary or heavily occluded by another object. As YOLO bounding boxes do not encode occlusion information, the model must infer distance from incomplete geometric cues, which naturally leads to misestimation. Another source of error is overlapping detections from crowded scenes, where changes in bounding-box dimensions can be caused by scene structure rather than true distance changes.
 
 \subsection{Model Limitations and Future Improvements}
-The patterns above suggest that while bounding-box features are effective for many cases, they do not capture enough information for distant, small, or heavily occluded objects. If we were to extend this work, incorporating additional cues—such as depth priors from MiDaS (Ranftl et al., 2022), temporal information from consecutive frames, or normalized object size statistics—could help reduce these errors. Data augmentation that simulates occlusions or long-range objects may also improve robustness.
+The patterns above suggest that while bounding-box features are effective for many cases, they do not capture enough
+information for distant, small, or heavily occluded objects. If we were to extend this work, incorporating additional
+cues—such as depth priors from MiDaS\cite{Ranftl2022}, temporal information from consecutive frames, or normalized
+object size statistics—could help reduce these errors. Data augmentation that simulates occlusions or long-range
+objects may also improve robustness.
 
-Overall, the error analysis confirms that our model performs well for typical ADAS-relevant distances and object sizes, but predictable challenges remain for edge cases where geometric information is inherently limited.
+Overall, the error analysis confirms that our model performs well for typical ADAS-relevant distances and object
+sizes, but predictable challenges remain for edge cases where geometric information is inherently limited.
 
+\subsection{Unexpected High Accuracy}
+Our model achieved an astonishingly accuracy on the test set selected from the dataset we used. We discussed about it
+in the tutorial section with TA for about an hour, and we did not find any problem in our code. There were only 2
+datapoint found to be duplicated in both training and testing datasets which were quickly removed, however even after removing
+them the accuracy was still very high, therefor it is unlikely that was the reason for the high accuracy.
+We do think its the problem of the dataset, given a few properties we noticed in it:
 
-Our model have got a astonishing accuracy on the test set selected from the dataset we used. We discussed about it in the tutorial section with TA for a whole section, and we did not find any problem in our code. There is no leakage of data from test set, there were only two bounding box in the datagiven were identical after we fully examined the dataset, which may indicate problem in the dataset, but its still not the reason for the great accuracy. We do think its the problem of the dataset, given all the examples in it gives well arranged, clear bounding boxes, the angle of the items were also kind of arranged, the human were all standing straight, the vans and the cars were all facing the camera with certain angle, which might explains the accuracy we achieved with the model. 
-
+\begin{itemize}[noitemsep,topsep=0pt,leftmargin=1.5em]
+    \item Well arranged, clear bounding boxes
+    \item Similarly sized vehicles
+    \item All pedestrians were standing straight
+    \item Few occlusions
+    \item Vehicles mostly facing the camera at certain angles
+\end{itemize}
 
 
 
