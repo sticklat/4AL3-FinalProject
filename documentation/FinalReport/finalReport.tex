@@ -96,7 +96,7 @@ Recent research has explored a spectrum of approaches to monocular distance esti
 regression models—such as the unsupervised framework proposed by\cite{godard2017}—demonstrate high performance
 but require heavy computation and large training datasets, making them less practical for real-time embedded
 deployment. More lightweight object-based approaches instead focus on predicting distances from detected
-objects rather than full-scene depth. For example, the Disnet model (Haseeb et al., 2018) utilizes YOLO-based
+objects rather than full-scene depth. For example, the Disnet model\cite{Haseeb2018DisNetAN} utilizes YOLO-based
 object detection as a preprocessing step before a neural network regresses distance values, and later
 work\cite{Franke2021} improves on this pipeline through dataset augmentation and targeted architectural
 refinements. Fang et al.\ \cite{fang2019bboxdistance} show that even simple geometric descriptors of detected 
@@ -105,7 +105,10 @@ decision to investigate a bounding-box–only estimation pipeline.
 
 Hybrid approaches have also emerged: ODENet\cite{Felipe2025} combines MiDaS-generated depth
 maps\cite{Ranftl2022} with YOLOv8 detections\cite{yolov8_ultralytics}, aiming to integrate global depth
-cues with object-specific features.
+cues with object-specific features. There have also been recent applications of monocular distance estimation
+in other related domains, such as in unmanned surface vehicles where the YOLOv7 and YOLOv9 models were used for their
+base layers but had the top layers replaces and retrained to also output distance estimations in addition to object detection
+\cite{kiefer2025approximatesupervisedobjectdistance}.
 
 Building on these insights, our project focuses on a simplified yet efficient object-based distance estimator.
 Instead of predicting dense depth maps, we investigate whether bounding-box geometry and object-class information
