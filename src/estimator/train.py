@@ -120,7 +120,7 @@ def train_distance_model(train_loader,val_loader,device="cpu", epochs=50, lr=1e-
         model = nn.DataParallel(model)
         print(f"Using DataParallel with {torch.cuda.device_count()} GPUs")
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=1e-5)
 
     train_losses = []
     val_losses = []
@@ -134,6 +134,11 @@ def train_distance_model(train_loader,val_loader,device="cpu", epochs=50, lr=1e-
         
         if verbose:
             print(f"Epoch {epoch+1:03d} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}")
+            
+        if (sum(val_losses[-5:]) / 5) < 5e-2:
+            if verbose:
+                print("Training loss below 1e-6, stopping early.")
+            break
 
     if return_losses:
         return model, train_losses, val_losses
